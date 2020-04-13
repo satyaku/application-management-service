@@ -1,0 +1,444 @@
+---
+swagger: "2.0"
+info:
+  description: |
+    Service developed for application maintenace.
+  version: "1.0"
+  title: Application-Management
+  contact:
+    name: Showtime Inc.
+    url: http://www.showtime.com
+    email: support@showtime.com
+  license:
+    name: Showtime Inc.
+    url: http://showtime.com
+host: showtime.com
+basePath: /applicationManagement/v1
+schemes:
+- https
+- http
+paths:
+  /signUp:
+    post:
+      tags:
+      - EndUser
+      summary: User signUp
+      operationId: userSignUp
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - in: body
+        name: SignUpDetails
+        description: |
+          User signing in
+        required: true
+        schema:
+          $ref: '#/definitions/SignUpDetails'
+      responses:
+        "200":
+          description: |
+            *OK* - User created successfully.
+          schema:
+            $ref: '#/definitions/Response' 
+  /signIn:
+    post:
+      tags:
+      - AllUsers
+      summary: User signIn
+      operationId: userSignIn
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - in: body
+        name: Credentials
+        description: |
+          User signing in
+        required: true
+        schema:
+          $ref: '#/definitions/Credentials'
+      responses:
+        "200":
+          description: |
+            *OK* - User logged in successfully.
+          schema:
+            $ref: '#/definitions/Response'
+  /resetPassword:
+    post:
+      tags:
+      - AllUsers
+      summary: User Reset Password
+      operationId: userResetpassword
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - in: body
+        name: Credentials
+        description: |
+          User signing in Details
+        required: true
+        schema:
+          $ref: '#/definitions/Credentials'
+      responses:
+        "200":
+          description: |
+            *OK* - User modified successfully.
+          schema:
+            $ref: '#/definitions/Response'
+  /getAllUsers:
+    get:
+      tags:
+      - Admin
+      summary: User Details
+      operationId: getAllUsers
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: status
+        in: query
+        description: |
+          Get users by status
+          Active
+          All
+        required: true
+        type: string
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - name: sort
+        in: query
+        description: |
+          The fields by which the response is sorted. The supported value is - priority.
+        required: false
+        type: array
+        items:
+          type: string
+          minLength: 1
+        collectionFormat: multi
+      - name: limit
+        in: query
+        description: |
+          Requested number of resources to be provided in the response requested by the client
+        required: true
+        type: integer
+      - name: offset
+        in: query
+        description: "Requested index for start of resources to be provided in the response requested by the client \n"
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: |
+            *OK* - User featched successfully.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserDtls' 
+  /getUserDetails/{username}:
+    get:
+      tags:
+      - AllUsers
+      summary: User Details
+      operationId: getUserDeatils
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - in: path
+        name: username
+        description: |
+          User signing in Details
+        required: true
+        type: string
+      responses:
+        "200":
+          description: |
+            *OK* - User featched successfully.
+          schema:
+            $ref: '#/definitions/Users'
+  /memo/{username}:
+    get:
+      tags:
+      - Admin
+      summary: Retrieve memo
+      operationId: getMemo
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: username
+        in: path
+        description: |
+          username of the user
+        required: true
+        type: string
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      - name: sort
+        in: query
+        description: |
+          The fields by which the response is sorted. The supported value is - priority.
+        required: false
+        type: array
+        items:
+          type: string
+          minLength: 1
+        collectionFormat: multi
+      - name: limit
+        in: query
+        description: |
+          Requested number of resources to be provided in the response requested by the client
+        required: false
+        type: integer
+      - name: offset
+        in: query
+        description: "Requested index for start of resources to be provided in the response requested by the client \n"
+        required: false
+        type: integer
+      - name: mask
+        in: query
+        description: |
+          Query mask, which is a set of flags that impact the returned fields.
+          The supported values are&#58;
+          - *returnPolicies* - Once set, the API returns additional policy information for the catalog promotions.
+
+          <i>Example&#58; mask=returnPolicies</i>
+        required: false
+        type: string
+      responses:
+        "200":
+          description: |
+            *OK* - The memos were retrieved successfully.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserMemo'
+  /validateUser/{username}:
+    get:
+      tags:
+      - EndUser
+      summary: validate the user
+      operationId: getPromotion
+      consumes:
+      - application/json;charset=utf-8
+      produces:
+      - application/json;charset=utf-8
+      parameters:
+      - name: username
+        in: path
+        description: |
+          The email id of the user
+        required: true
+        type: string
+      - name: Accept-Language
+        in: header
+        description: |
+          The locale of the client
+        required: false
+        type: string
+      responses:
+        "200":
+          description: |
+            *OK* - User validated successfully.
+          schema:
+            $ref: '#/definitions/Response'
+definitions:
+  SignUpDetails:
+    type: object
+    properties:
+      username:
+        type: string
+        description: |
+          user id of the user
+      email:
+        type: string
+        description: |
+          Email id of the user
+      password:
+        type: string
+        description: |
+          Password for the account
+      personalDetails:
+        type: object
+        description: |
+          Personal details of the user.
+        items:
+          $ref: '#/definitions/PersonalDetails'
+    required: 
+    - username
+    - email
+    - password
+    - personalDetails
+    description: |
+      The details of user at sign up
+  PersonalDetails:
+    type: object
+    properties:
+      username:
+        type: string
+      fullName:
+        type: string
+        description: |
+          Full name of the customer
+      contactNumber:
+        type: string
+        description: |
+          The phone number of the customer
+      age:
+        type: integer
+        description: |
+          The age of the customer
+    required: 
+    - username
+    - fullName
+    - contactNumber
+    - age
+    description: |
+      Personal details for sign up.
+  Response:
+    type: object
+    properties:
+      status:
+        type: string
+        description: |
+          Status of the activity 
+      description:
+        type: string
+        description: |
+          Description for the response status
+    description: |
+      Response for the activity on HTTP200OK
+  UserMemo:
+    type: object
+    properties:
+      username:
+        type: string
+      memoSequenceId:
+        type: integer
+      acitivityType:
+        type: string
+      acitivityTimeStamp:
+        type: string
+        format: date-time
+      activityDescription:
+        $ref: '#/definitions/ActivityDescription'
+    description: |
+      User activity memo
+  ActivityDescription:
+    type: object
+    properties:
+      memoSequenceId:
+        type: integer
+      longDescription:
+        type: string
+        description: |
+          long description of the activity
+      activitySubType:
+        type: string
+        description: |
+          Subtype of the activity
+      action:
+        type: string
+        description: |
+          Action performed by the user
+    description: |
+      Activity description for the user
+  Credentials:
+    type: object
+    properties:
+      username:
+        type: string
+        description: "Email to login" 
+      password:
+        type: string
+        description: "Password to login"
+    required: 
+    - username
+    - password
+  UserDtls:
+    type: object
+    properties:
+      username:
+        type: string
+        description: "Username to login" 
+      email:
+        type: string
+        description: "Username to login"  
+  Users:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      personalDetails:
+        $ref: '#/definitions/PersonalDetails'
+      accountDetails:
+        $ref: '#/definitions/AccountDetails'
+    description: |
+      User details
+  AccountDetails:
+    type: object
+    properties:
+      username:
+        type: string
+      activeFrom:
+        type: string
+        format: date-time
+      isActive:
+        type: string
+      lastDate:
+        type: string
+        format: date-time
+      lastBookingDetails:
+        $ref: '#/definitions/LastBookingDetails'
+  LastBookingDetails:
+    type: object
+    properties:
+      lastBookingDate:
+        type: string
+        format: date-time
+      lastBookingtype:
+        type: string
+      lastBookingTotal:
+        type: number
